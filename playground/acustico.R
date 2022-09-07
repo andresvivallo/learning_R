@@ -15,3 +15,9 @@ data %>% as_tibble()
 data %>%
   group_by(FECHA) %>%
   summarise(max = max(BI))
+dfrgdfgdfdfgdfg
+dfg
+fdg
+fdg
+dfg
+fd
