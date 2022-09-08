@@ -37,18 +37,23 @@ rangohorario=data %>%
   summarise(max = max(BI)) 
 maximos
 
-#calcular maximo mensual por rango horario
-#1convertir UTC en HORASCL
+# calcular maximo mensual por rango horario
+# 1convertir UTC en HORASCL
+# https://stackoverflow.com/questions/1395117/how-do-you-convert-dates-times-from-one-time-zone-to-another-in-r
+data %>% as_tibble()
 dataconvertida <- data %>% 
-  mutate(HORARIO = ifelse(address == '',work_address,address))
-dataconvertida
+  mutate(FECHAHORA = with_tz(ymd_hms(substr(ARCHIVO, 1, 15), tz='UTC'), tzone = "America/Santiago"))
 
-data$HORARIO <- lubridate::ymd(as.character(data$FECHA))
+resumen_horario = dataconvertida %>% 
+  mutate(mes = month(FECHAHORA), ) %>%
+  group_by(mes, hora, minuto) %>%
+  # group_by(month(FECHAHORA),hour(FECHAHORA),minute(FECHAHORA)) %>%
+  summarise(max = max(BI))
 
-maximos=data %>%
-  group_by(FECHA) %>%
-  summarise(max = max(BI)) 
-maximos
-
-
-
+# loop for generate graphics
+for (j in 1:12){
+  gg = resumen_horario %>% 
+    filter(mes == j) %>% 
+    ggplot(aes(x=,y=))
+  ggsave(gg, paste0("grafos/mes_", j,".png"), dpi=300)
+}
